@@ -1,7 +1,7 @@
 {
   "name": "dom-traversal-functions",
-  "version": "1.1.0",
-  "description": "Standardized, zero-dependency DOM traversal and data extraction utilities for UI components",
+  "version": "1.2.0",
+  "description": "Standardized, zero-dependency DOM traversal and data extraction utilities for component event architectures",
   "type": "module",
   "license": "MIT",
   "author": "KeshavSoft",
@@ -12,11 +12,15 @@
   "main": "./src/index.js",
   "exports": {
     ".": "./src/index.js",
-    "./table": "./src/v1/table/index.js"
+    "./table": "./src/v2/table/index.js",
+    "./table/header": "./src/v2/table/header/index.js",
+    "./table/body": "./src/v2/table/body/index.js",
+    "./table/footer": "./src/v2/table/footer/index.js"
   },
   "files": [
     "src",
-    "README.md"
+    "README.md",
+    "docs"
   ],
   "scripts": {
     "build": "npx @keshavsoft/build-cli"
