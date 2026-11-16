@@ -1,0 +1,25 @@
+{
+  "name": "dom-traversal-functions",
+  "version": "1.1.0",
+  "description": "Standardized, zero-dependency DOM traversal and data extraction utilities for UI components",
+  "type": "module",
+  "license": "MIT",
+  "author": "KeshavSoft",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keshavsoft/dom-traversal-functions.git"
+  },
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./table": "./src/v1/table/index.js"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "npx @keshavsoft/build-cli"
+  },
+  "devDependencies": {}
+}
