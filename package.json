@@ -1,6 +1,6 @@
 {
   "name": "dom-traversal-functions",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Standardized, zero-dependency DOM traversal and data extraction utilities for component event architectures",
   "type": "module",
   "license": "MIT",

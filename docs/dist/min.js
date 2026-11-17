@@ -205,7 +205,7 @@ var x = [{
 	})
 }, P = {
 	name: "dom-traversal-functions",
-	version: "v3"
+	version: "1.3.1"
 };
 // src/v3/index.js
 ((e) => {
