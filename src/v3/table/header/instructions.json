@@ -1,0 +1,13 @@
+[
+  {
+    "narration": "Find search input control if event came from within header container",
+    "sourcePath": { "fileName": "root" },
+    "func": "closest",
+    "arguments": { "selector": "input, form, div" }
+  },
+  {
+    "narration": "Read search query value from input",
+    "sourcePath": { "fileName": "previous" },
+    "func": "readValue"
+  }
+]

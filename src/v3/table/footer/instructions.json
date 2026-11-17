@@ -1,0 +1,19 @@
+[
+  {
+    "narration": "Find closest footer table row",
+    "sourcePath": { "fileName": "root" },
+    "func": "closest",
+    "arguments": { "selector": "tfoot tr" }
+  },
+  {
+    "narration": "Collect all input and select controls in footer row",
+    "sourcePath": { "fileName": "previous" },
+    "func": "querySelectorAll",
+    "arguments": { "selector": "input, select" }
+  },
+  {
+    "narration": "Map named control values into object",
+    "sourcePath": { "fileName": "previous" },
+    "func": "mapNamedValues"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "narration": "Find closest body table row",
+    "sourcePath": { "fileName": "root" },
+    "func": "closest",
+    "arguments": { "selector": "tr" }
+  },
+  {
+    "narration": "Collect all data cells from row",
+    "sourcePath": { "fileName": "previous" },
+    "func": "querySelectorAll",
+    "arguments": { "selector": "td" }
+  },
+  {
+    "narration": "Map collected cell values to columns using clientData",
+    "sourcePath": { "fileName": "previous" },
+    "func": "mapValues",
+    "arguments": { "read": "text" }
+  }
+]

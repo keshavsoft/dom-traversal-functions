@@ -1,6 +1,6 @@
 {
   "name": "dom-traversal-functions",
-  "version": "1.2.1",
+  "version": "1.3.1",
   "description": "Standardized, zero-dependency DOM traversal and data extraction utilities for component event architectures",
   "type": "module",
   "license": "MIT",
@@ -11,11 +11,7 @@
   },
   "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js",
-    "./table": "./src/v2/table/index.js",
-    "./table/header": "./src/v2/table/header/index.js",
-    "./table/body": "./src/v2/table/body/index.js",
-    "./table/footer": "./src/v2/table/footer/index.js"
+    ".": "./src/index.js"
   },
   "files": [
     "src",
@@ -25,5 +21,7 @@
   "scripts": {
     "build": "npx @keshavsoft/build-cli"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "dom-primitive-engine": "^1.19.1"
+  }
 }
