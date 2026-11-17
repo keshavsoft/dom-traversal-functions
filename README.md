@@ -1,15 +1,17 @@
 # dom-traversal-functions
 
 <p align="left">
-  <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version 1.2.0" />
+  <img src="https://img.shields.io/badge/version-1.3.0-blue.svg" alt="Version 1.3.0" />
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License MIT" />
-  <img src="https://img.shields.io/badge/dependencies-0-brightgreen.svg" alt="Zero Dependencies" />
+  <img src="https://img.shields.io/badge/dependencies-dom--primitive--engine-brightgreen.svg" alt="Powered by dom-primitive-engine" />
   <img src="https://img.shields.io/badge/module-ESM%20%2B%20Global%20ks-orange.svg" alt="ES Modules & Global ks" />
 </p>
 
-**Standardized, zero-dependency DOM traversal and data extraction utilities for component event architectures.**
+> **Standardized, instruction-driven DOM traversal and data extraction utilities for table component architectures.**
 
-Extracting rows, reading input values, and traversing the DOM in application handlers leads to brittle, tangled code. `dom-traversal-functions` isolates all DOM querying mechanics into granular, single-responsibility functions organized strictly around the **3-part narrative story of the UI control**.
+Extracting rows, reading input values, and navigating table structures in application handlers leads to brittle, tangled DOM code. `dom-traversal-functions` isolates all DOM querying mechanics into granular, single-responsibility functions organized strictly around the **3-part narrative story of the table control**.
+
+In **V3**, every traversal operation is powered by declarative `instructions.json` executed through `dom-primitive-engine`.
 
 ---
 
@@ -28,205 +30,92 @@ Every complex data control tells a story from top to bottom. For a Table, its op
 Search & Top Controls      Rows, Data & Actions       Data Entry & New Rows
 ─────────────────────      ────────────────────       ─────────────────────
 • getSearchQuery           • getRowElement            • getFooterData
-                           • getRowIndex              • clearRowInputs
-                           • highlightRow
+• instructions.json        • getRowIndex              • clearRowInputs
+                           • highlightRow             • instructions.json
                            • getRowData
+                           • instructions.json
 ```
 
 ---
 
-## 🚀 Quick Start: Global Script (Zero-Import Workflow)
+## 🚀 Quick Start
 
-Load the bundle once via a standard `<script>` tag or CDN:
+### 1. Modern ESM Import
+```javascript
+import { table } from "dom-traversal-functions";
 
+// 1. Header: Extract search query from input or event
+const query = table.header.getSearchQuery(searchInput);
+
+// 2. Body: Extract row data or highlight selected row
+const rowData = table.body.getRowData(clickedElement, { columns });
+table.body.highlightRow(rowElement, "table-primary");
+
+// 3. Footer: Extract inputs from footer row & clear inputs
+const newRecord = table.footer.getFooterData(saveButton, columns);
+table.footer.clearRowInputs(saveButton);
+```
+
+### 2. Global Script (Zero-Import Workflow)
+Load the bundle via CDN or script tag:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/dom-traversal-functions/docs/dist/min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dom-traversal-functions/docs/dist/v3/min.js"></script>
 ```
 
-It automatically attaches to `window.ks.domTraversal.table`:
-
+It automatically registers on `window.ks.domTraversal.table`:
 ```javascript
-// Zero import statements needed in your application or actions.js!
 const { header, body, footer } = ks.domTraversal.table;
-
-// 1. Header query
-const query = header.getSearchQuery(inputEl);
-
-// 2. Body selection & highlight
-body.highlightRow(clickedEl, "table-primary");
-const rowIndex = body.getRowIndex(clickedEl);
-const rowData = body.getRowData(clickedEl);
-
-// 3. Footer extraction & reset
-const newRow = footer.getFooterData(saveButtonEl);
-footer.clearRowInputs(saveButtonEl);
 ```
 
 ---
 
-## 📦 Modular ES Module Imports
+## 🧩 Declarative Traversal (`instructions.json`)
 
-If you are using a bundler (Vite, Rollup, Webpack):
-
-```bash
-npm install dom-traversal-functions
-```
+Each semantic area exports its own serializable `instructions.json` recipe executed by `dom-primitive-engine`:
 
 ```javascript
-// Import the table story
-import { header, body, footer } from "dom-traversal-functions/table";
+import { table } from "dom-traversal-functions";
 
-// Or import specific subpath
-import * as body from "dom-traversal-functions/table/body";
-import * as footer from "dom-traversal-functions/table/footer";
+// Inspect or reuse the declarative JSON traversal recipes:
+console.log(table.header.instructions);
+console.log(table.body.instructions);
+console.log(table.footer.instructions);
+```
+
+### Example: Body Traversal (`src/v3/table/body/instructions.json`)
+```json
+[
+  {
+    "narration": "Find closest body table row",
+    "sourcePath": { "fileName": "root" },
+    "func": "closest",
+    "arguments": { "selector": "tr" }
+  },
+  {
+    "narration": "Collect all data cells from row",
+    "sourcePath": { "fileName": "previous" },
+    "func": "querySelectorAll",
+    "arguments": { "selector": "td" }
+  },
+  {
+    "narration": "Map collected cell values to columns using clientData",
+    "sourcePath": { "fileName": "previous" },
+    "func": "mapValues",
+    "arguments": { "read": "text" }
+  }
+]
 ```
 
 ---
 
-## 📚 API Reference
+## 📦 Companion Ecosystem
 
-### 1. Header Traversal (`header.*`)
-
-#### `getSearchQuery(target)`
-Extracts and normalizes (trims, converts to lowercase) the query text from an `<input>` element or an `InputEvent`.
-
-```javascript
-const query = ks.domTraversal.table.header.getSearchQuery(matchElement);
-// Returns: "fasteners" (trimmed, lowercased, safe string)
-```
+- [**json-renderers-build-table**](https://github.com/keshavsoft/json-renderers-build-table): Pure declarative table rendering.
+- [**json-renderers-build-table-events**](https://github.com/keshavsoft/json-renderers-build-table-events): High-level table interactivity and event orchestration.
+- [**dom-primitive-engine**](https://github.com/keshavsoft/dom-primitive-engine): The underlying declarative JSON instruction execution engine.
 
 ---
 
-### 2. Body Traversal (`body.*`)
+## License
 
-#### `getRowElement(element)`
-Finds and returns the closest enclosing `<tr>` element for any child node (button, icon, cell) or the row itself.
-
-```javascript
-const tr = ks.domTraversal.table.body.getRowElement(event.target);
-// Returns: HTMLTableRowElement | null
-```
-
-#### `getRowIndex(element, [bodySelector])`
-Calculates the 0-based index of a table row within its enclosing `<tbody>` (or within a custom selector list).
-
-```javascript
-const rowIndex = ks.domTraversal.table.body.getRowIndex(matchElement);
-// Returns: 2 (number, or -1 if not found)
-```
-
-#### `highlightRow(element, [className="table-primary"], [bodySelector])`
-Removes the specified highlight class from all sibling rows in the `<tbody>` and applies it to the target row.
-
-```javascript
-ks.domTraversal.table.body.highlightRow(matchElement, "table-primary");
-// Sibling <tr> elements have "table-primary" removed; target <tr> receives "table-primary".
-```
-
-#### `getRowData(element, { columns, dataset, bodySelector })`
-Converts a table row into a plain JavaScript data object. Supports two extraction modes:
-1. Direct index lookup from an in-memory `dataset` array.
-2. Direct DOM cell extraction mapped against column definitions.
-
-```javascript
-const record = ks.domTraversal.table.body.getRowData(matchElement, { 
-    dataset: state.dataset,
-    columns: state.columns 
-});
-// Returns: { itemName: "0.11-30 Stainless Steel Rod", category: "Raw Materials", baseUnit: "pcs" }
-```
-
----
-
-### 3. Footer Traversal (`footer.*`)
-
-#### `getFooterData(element, [columns])`
-Extracts all values from `<input>` elements inside the footer row into a key-value record object.
-
-```javascript
-const newRecord = ks.domTraversal.table.footer.getFooterData(matchElement, state.columns);
-// Returns: { itemName: "M8 Flange Nut", category: "Fasteners", baseUnit: "boxes" }
-```
-
-#### `clearRowInputs(element)`
-Resets `.value = ""` for all `<input>` elements located inside the specified row.
-
-```javascript
-ks.domTraversal.table.footer.clearRowInputs(matchElement);
-// Clears all input elements in the footer row; returns count of cleared inputs.
-```
-
----
-
-## 🛠️ Complete Integration Example (`actions.js`)
-
-Below is how clean an application's `actions.js` looks when paired with `dom-primitive-bindings`:
-
-```javascript
-export const actions = {
-    // 1. Search Bar Filter
-    onSearchInput: (event, matchElement) => {
-        const { header } = ks.domTraversal.table;
-        const query = header.getSearchQuery(matchElement);
-
-        const filtered = query
-            ? state.dataset.filter(item =>
-                Object.values(item).some(val =>
-                    String(val ?? "").toLowerCase().includes(query)
-                )
-            )
-            : state.dataset;
-
-        renderTable(filtered);
-    },
-
-    // 2. Row Selection & Highlight
-    onRowSelect: (event, matchElement) => {
-        const { body } = ks.domTraversal.table;
-        const rowIndex = body.getRowIndex(matchElement);
-        if (rowIndex < 0 || rowIndex >= state.dataset.length) return;
-
-        body.highlightRow(matchElement, "table-primary");
-        const record = state.dataset[rowIndex];
-        console.log("Selected Record:", record);
-    },
-
-    // 3. Row Action Button ("show")
-    onRowShow: (event, matchElement) => {
-        event.stopPropagation();
-        const { body } = ks.domTraversal.table;
-        const rowIndex = body.getRowIndex(matchElement);
-        body.highlightRow(matchElement, "table-primary");
-        
-        const record = state.dataset[rowIndex];
-        displayRecordInDetailPanel(record);
-    },
-
-    // 4. Footer Save New Record
-    onFooterSave: (event, matchElement) => {
-        const { footer } = ks.domTraversal.table;
-        const newRecord = footer.getFooterData(matchElement, state.columns);
-
-        if (Object.values(newRecord).some(val => val.length > 0)) {
-            footer.clearRowInputs(matchElement);
-            state.dataset.push(newRecord);
-            renderTable(state.dataset);
-        }
-    }
-};
-```
-
----
-
-## 🎯 Design Principles
-
-1. **Zero Raw DOM in Business Logic**: Handlers never need to invoke `closest()`, `querySelectorAll()`, or manual loop counters.
-2. **Zero-Import Option**: Works out-of-the-box via `window.ks.domTraversal.table` with zero build configuration.
-3. **Fail-Safe**: Gracefully handles missing elements, null targets, and bounds checking.
-4. **Story-Driven Organization**: Grouped strictly by semantic concerns (`header`, `body`, `footer`).
-
----
-
-## 📄 License
-
-MIT © [KeshavSoft](https://github.com/keshavsoft)
+MIT &copy; [KeshavSoft](https://github.com/keshavsoft)
